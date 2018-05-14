@@ -4,4 +4,14 @@
 <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
 <include file="$(find turtlebot_navigation)/launch/gmapping_demo.launch"/>
 
+  <!-- Publishes the voxel grid to rviz for display -->
+  <node pkg="costmap_2d" type="costmap_2d_markers" name="voxel_visualizer">
+    <remap from="voxel_grid" to="costmap/voxel_grid"/>
+  </node>
+
+  <!-- Run the costmap node -->
+  <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" >
+    <rosparam file="$(find ahmedrrt)/param/cost_params_real.yaml" command="load" ns="costmap" />
+    <param name="global_costmap/global_frame" value="$(arg namespace)/map"/>
+  </node>
 </launch>
