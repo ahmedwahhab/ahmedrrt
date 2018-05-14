@@ -2,7 +2,7 @@
 <launch>
 
 <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
-<include file="$(find turtlebot_navigation)/launch/gmapping_demo.launch"/>
+<include file="$(find ahmedrrt)/launch/real_gmapping.launch"/>
 
   <!-- Publishes the voxel grid to rviz for display -->
   <node pkg="costmap_2d" type="costmap_2d_markers" name="voxel_visualizer">
