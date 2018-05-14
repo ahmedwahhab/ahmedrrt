@@ -12,6 +12,5 @@
   <!-- Run the costmap node -->
   <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" >
     <rosparam file="$(find ahmedrrt)/param/cost_params_real.yaml" command="load" ns="costmap" />
-    <param name="global_costmap/global_frame" value="$(arg namespace)/map"/>
   </node>
 </launch>
