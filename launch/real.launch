@@ -13,4 +13,6 @@
   <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" >
     <rosparam file="$(find ahmedrrt)/param/cost_params_real.yaml" command="load" ns="costmap" />
   </node>
+  
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find ahmedrrt)/launch/include/single.rviz"/>
 </launch>
