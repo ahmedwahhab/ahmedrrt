@@ -1,7 +1,0 @@
-<!-- -->
-<launch>
-  <machine name="raspberryPi" address="ubiquityrobot" user="ubuntu" password="ubuntu" env-loader="/home/ubuntu/main.sh" />
-
-  <node machine="raspberryPi" name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
-
-</launch>

@@ -8,9 +8,13 @@
     <remap from="voxel_grid" to="costmap/voxel_grid"/>
   </node>
 
+
+
   <!-- Run the costmap node -->
   <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" >
     <rosparam file="$(find ahmedrrt)/param/cost_params.yaml" command="load" ns="costmap" />
+    <param name="costmap/static_layer/track_unknown_space" value="true"/>
+    <param name="costmap/obstacle_layer/track_unknown_space" value="true"/> 
   </node>
 
 </launch>

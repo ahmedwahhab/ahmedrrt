@@ -174,11 +174,13 @@ def callBack(data):
 	global dt,robotSpeed
 	PathPlanner = rospy.ServiceProxy('makePlane', makeplan)
 	print data.pose
-	response = PathPlanner(data.pose)
+	try:
+		response = PathPlanner(data.pose)
+	except:
+		return None
 	
 	waypoints=response.pathPoints
-	print waypoints
-	print '____________'
+
 	waypoints=waypoints[::-1]
 	print waypoints
 	#getTrajectory(waypoints,robotSpeed,dt)
@@ -206,16 +208,15 @@ def node():
 			tfLisn.waitForTransform('/map', '/base_link', rospy.Time(0),rospy.Duration(10.0))
 			condit=1
 		except:
-			print "couldn't get base_link to map transformation"
+			pass
 
 	
 	try:
 		rospy.wait_for_service('/makePlane')
-		print "hoon"
 		rospy.Subscriber("/move_base_simple/goal", PoseStamped, callBack)
 		rospy.spin()
 	except:
-		print "cannot start planner client"
+		rospy.logwarn("cannot start planner client")
 		
 	
 

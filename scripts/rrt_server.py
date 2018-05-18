@@ -14,7 +14,7 @@ import actionlib
 import tf
 from ahmedrrt.srv import makePlan as makeplan
 from ahmedrrt.srv import makePlanResponse
-from functions import PathSmoothing
+from functions import PathSmoothing,gridCheck
 
 from os import system
 from random import random
@@ -220,6 +220,7 @@ class RRT:
 
 	def makePlan(self,x):
 		row=RRT.child.index(list(x))
+
 		temp=Point()
 		temp.x=x[0]
 		temp.y=x[1]
@@ -262,7 +263,11 @@ def handler(msg):
 	
 	global mapData,tfLisn
 	x_goal=array([msg.pose.position.x,msg.pose.position.y])
-
+	
+	if gridCheck(mapData,x_goal)==-1:
+		rospy.logerr("Target Goal lies in the unknown space!")
+		return None
+	
 	(trans,rot) = tfLisn.lookupTransform('/map', '/base_link', rospy.Time(0))
 	#trans=[0.,0.]
 	x_init=array([trans[0],trans[1]])
@@ -291,7 +296,10 @@ def handler(msg):
 		
 # finding path
 		if LA.norm(x_new-x_goal)<ETA:
-			path=tree.makePlan(x_new)
+			try:
+				path=tree.makePlan(x_new)
+			except:
+				rospy.logwarn("failed to get a path")
 			path=PathSmoothing(copy(path),100,mapData)
 			tree.visualize(path)
 			break
@@ -312,12 +320,14 @@ def node():
 		pass
 	s = rospy.Service('makePlane', makeplan, handler)
 	
-	try:
-		tfLisn.waitForTransform('/map', '/base_link', rospy.Time(0),rospy.Duration(10.0))
-	except:
-		print "couldn't get base_link to map transformation"
-		return 0
-	print 'ready for planning'
+	_cond=True
+	while _cond:
+		try:
+			tfLisn.waitForTransform('/map', '/base_link', rospy.Time(0),rospy.Duration(5.0))
+			_cond=False
+		except:
+			pass
+	rospy.loginfo('ready for planning')
 	rospy.spin()
 #_____________________________________________________________________________
 
