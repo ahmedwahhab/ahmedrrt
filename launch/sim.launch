@@ -10,4 +10,10 @@
 <include file="$(find ahmedrrt)/launch/costmap.launch"/>
 
 
+<node pkg="ahmedrrt" type="rrt_server.py" name="rrt_server">
+<remap from="map" to="costmap_node/costmap/costmap"/>
+</node>
+
+<node pkg="ahmedrrt" type="move_base.py" name="move_base"/>
+
 </launch>

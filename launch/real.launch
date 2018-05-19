@@ -1,7 +1,7 @@
 <!-- -->
 <launch>
 
-<include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+
 <include file="$(find ahmedrrt)/launch/real_gmapping.launch"/>
 
   <!-- Publishes the voxel grid to rviz for display -->
@@ -14,4 +14,15 @@
     <rosparam file="$(find ahmedrrt)/param/cost_params_real.yaml" command="load" ns="costmap" />
   </node>
   
+  
+  
+  <node pkg="ahmedrrt" type="rrt_server.py" name="rrt_server">
+<remap from="map" to="costmap_node/costmap/costmap"/>
+</node>
+
+<node pkg="ahmedrrt" type="move_base.py" name="move_base">
+<remap from="mobile_base/commands/velocity" to="/cmd_vel_mux/nav_cmd_vel"/>
+</node>
+
+
 </launch>

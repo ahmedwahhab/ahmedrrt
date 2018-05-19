@@ -1,13 +1,15 @@
 <!-- -->
 <launch>
 
-<param name="/use_sim_time" value="true"/>
+
 
 <node pkg="ahmedrrt" type="rrt_server.py" name="rrt_server">
 <remap from="map" to="costmap_node/costmap/costmap"/>
 </node>
 
-<node pkg="ahmedrrt" type="move_base.py" name="move_base"/>
+<node pkg="ahmedrrt" type="move_base.py" name="move_base">
+<remap from="mobile_base/commands/velocity" to="/cmd_vel_mux/nav_cmd_vel"/>
+</node>
 
 
 </launch>
