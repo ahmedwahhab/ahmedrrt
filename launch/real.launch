@@ -14,6 +14,17 @@
     <rosparam file="$(find ahmedrrt)/param/cost_params_real.yaml" command="load" ns="costmap" />
   </node>
 
+<node pkg="ahmedrrt" type="rrt_server.py" name="rrt_server">
+<remap from="map" to="costmap_node/costmap/costmap"/>
+</node>
 
+<node pkg="ahmedrrt" type="move_base.py" name="move_base">
+<remap from="/mobile_base/commands/velocity" to="/cmd_vel_mux/input/navi"/>
+</node>
   
+  
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find ahmedrrt)/launch/include/single.rviz">
+<remap from="move_base_simple/goal" to="move_base_simple/goal"/>
+</node>
+
 </launch>
