@@ -300,6 +300,7 @@ def handler(msg):
 				path=tree.makePlan(x_new)
 			except:
 				rospy.logwarn("failed to get a path")
+				return None
 			path=PathSmoothing(copy(path),100,mapData)
 			tree.visualize(path)
 			break

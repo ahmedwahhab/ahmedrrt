@@ -93,6 +93,8 @@ def getTrajectory(waypoints,robotSpeed,dt):
 		t_final = (1.0/robotSpeed) * sqrt( (x_final-x_initial)*(x_final-x_initial) + (y_final-y_initial)*(y_final-y_initial) ) #sec = 10sec per meter
 	
 		#Quadratic Polynomial Coefficients Matrix:
+		print t_initial, '      ' , t_final
+		
 		Polymatrix =	[[1.0, t_initial,	t_initial*t_initial,	t_initial*t_initial*t_initial	],
 				[0.0, 1.0,		2.0*t_initial,		3.0*t_initial*t_initial		],
 				[1.0, t_final,		t_final*t_final,	t_final*t_final*t_final		],
@@ -100,9 +102,11 @@ def getTrajectory(waypoints,robotSpeed,dt):
 
 		Cx = [[x_initial],[vx_initial],[x_final],[vx_final]]	  
 		Cy = [[y_initial],[vy_initial],[y_final],[vy_final]]
-		   
-		Polyinvmatrix = linalg.inv(Polymatrix) #matrix inverse
-
+		
+		try:   
+			Polyinvmatrix = linalg.inv(Polymatrix) #matrix inverse
+		except:
+			return None
 		Ax = dot(Polyinvmatrix,Cx) #matrix multiplication to obtain X polynomial coefiicients
 		Ay = dot(Polyinvmatrix,Cy) #matrix multiplication to obtain Y polynomial coefiicients
 
