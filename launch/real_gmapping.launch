@@ -1,6 +1,6 @@
 <!-- -->
 <launch>
-<arg name="3d_sensor" default="kinect"/>  <!-- r200, kinect, asus_xtion_pro -->
+
   
   
     <!-- 3D sensor -->
