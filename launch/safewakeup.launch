@@ -17,7 +17,7 @@
 
 
   <node pkg="nodelet" type="nodelet" name="cmd_vel_mux" args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
-    <param name="yaml_cfg_file" value="$(find ahmedrrt)/param/mux.yaml"/>
+    <param name="yaml_cfg_file" value="$(find kobuki_keyop)/param/keyop_mux.yaml"/>
     <remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
   </node>
 
@@ -31,22 +31,27 @@ mobile_base_nodelet_manager">
   </node>
 
 
+  <node pkg="nodelet" type="nodelet" name="keyop_vel_smoother" args="load yocs_velocity_smoother/VelocitySmootherNodelet 
+mobile_base_nodelet_manager">
+    <rosparam file="$(find kobuki_keyop)/param/keyop_smoother.yaml" command="load"/>
+    <remap from="keyop_vel_smoother/smooth_cmd_vel" to="cmd_vel_mux/keyboard_teleop"/>
+    <!-- Robot velocity feedbacks; use the one configured as base default -->
+    <remap from="keyop_vel_smoother/odometry" to="odom"/>
+    <remap from="keyop_vel_smoother/robot_cmd_vel" to="mobile_base/commands/velocity"/>
+  </node>
+  
+  <node pkg="kobuki_keyop" type="keyop" name="keyop" output="screen">
+    <remap from="keyop/motor_power" to="mobile_base/commands/motor_power"/>
+    <remap from="keyop/cmd_vel" to="keyop_vel_smoother/raw_cmd_vel"/>
+    <param name="linear_vel_step" value="0.05" type="double"/>
+    <param name="linear_vel_max" value="1.5" type="double"/>
+    <param name="angular_vel_step" value="0.33" type="double"/>
+    <param name="angular_vel_max" value="6.6" type="double"/>
+    <param name="wait_for_connection_" value="true" type="bool"/>
+  </node>
+
+
       
   <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link" args="0 0 0 0 0 0  /base_footprint /base_link 20" />
-
-
-
-  <!-- 3D sensor -->
-  <arg name="3d_sensor" default="$(env TURTLEBOT_3D_SENSOR)"/>  <!-- r200, kinect, asus_xtion_pro -->
-  <include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
-    <arg name="rgb_processing" value="false" />
-    <arg name="depth_registration" value="false" />
-    <arg name="depth_processing" value="false" />
-    
-    <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
-         Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 --> 
-    <arg name="scan_topic" value="/scan" />
-  </include>
-
 
  </launch>
