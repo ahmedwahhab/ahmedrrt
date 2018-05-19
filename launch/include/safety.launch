@@ -1,10 +1,4 @@
-<!-- -->
 <launch>
-
-<include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
-
-
-
   <!-- safety controller -->
   <node pkg="nodelet" type="nodelet" name="navigation_safety_controller" args="load kobuki_safety_controller/SafetyControllerNodelet mobile_base_nodelet_manager">
     <remap from="navigation_safety_controller/cmd_vel"           to="cmd_vel_mux/input/safety_controller"/>
@@ -12,20 +6,4 @@
     <remap from="navigation_safety_controller/events/cliff"      to="mobile_base/events/cliff"/>
     <remap from="navigation_safety_controller/events/wheel_drop" to="mobile_base/events/wheel_drop"/>
   </node>
-
-
-<include file="$(find ahmedrrt)/launch/real_gmapping.launch"/>
-
-  <!-- Publishes the voxel grid to rviz for display -->
-  <node pkg="costmap_2d" type="costmap_2d_markers" name="voxel_visualizer">
-    <remap from="voxel_grid" to="costmap/voxel_grid"/>
-  </node>
-
-  <!-- Run the costmap node -->
-  <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" >
-    <rosparam file="$(find ahmedrrt)/param/cost_params_real.yaml" command="load" ns="costmap" />
-  </node>
-
-
-  
 </launch>
