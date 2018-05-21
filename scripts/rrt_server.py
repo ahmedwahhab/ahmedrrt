@@ -230,6 +230,9 @@ class RRT:
 			path.append(copy(temp))
 
 			if parentx!=list(RRT.V[0]):
+				print parentx
+				print RRT.V[0]
+				print "------"
 				row=RRT.child.index(parentx)
 			else:
 				break
@@ -261,7 +264,7 @@ class RRT:
 # handler----------------------------------------------
 def handler(msg):
 	
-	global mapData,tfLisn
+	global mapData,tfLisn,smoothing_max_iter,goal_tolerance,ETA
 	x_goal=array([msg.pose.position.x,msg.pose.position.y])
 	
 	if gridCheck(mapData,x_goal)==-1:
@@ -275,7 +278,6 @@ def handler(msg):
 	rate = rospy.Rate(1000)	
 
 	rate.sleep()
-	ETA=.5
 	tree=RRT(ETA,x_init)
 #-------------------------------RRT------------------------------------------
 	while not rospy.is_shutdown():
@@ -295,9 +297,9 @@ def handler(msg):
 			tree.visualize_tree()
 		
 # finding path
-		if LA.norm(x_new-x_goal)<=(ETA*2):
+		if LA.norm(x_new-x_goal)<=goal_tolerance:
 			path=tree.makePlan(x_new)
-			path=PathSmoothing(copy(path),100,mapData)
+			path=PathSmoothing(copy(path),smoothing_max_iter,mapData)
 			tree.visualize(path)
 			break
 		rate.sleep()
@@ -309,8 +311,13 @@ def handler(msg):
 
 #Node
 def node():
-	global tfLisn,mapData
+	global tfLisn,mapDatam,smoothing_max_iter,goal_tolerance,ETA
 	rospy.init_node('pathPlannerServer')
+	
+	ETA = rospy.get_param('~eta',0.5)
+	goal_tolerance=rospy.get_param('~goal_tolerance',1)
+	smoothing_max_iter=rospy.get_param('~smoothing_max_iter',100)
+	
 	rospy.Subscriber("map", OccupancyGrid, mapCallBack)
 #wait if map is not received yet
 	while (len(mapData.data)<1):
