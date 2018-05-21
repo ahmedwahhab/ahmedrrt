@@ -93,7 +93,6 @@ def getTrajectory(waypoints,robotSpeed,dt):
 		t_final = (1.0/robotSpeed) * sqrt( (x_final-x_initial)*(x_final-x_initial) + (y_final-y_initial)*(y_final-y_initial) ) #sec = 10sec per meter
 	
 		#Quadratic Polynomial Coefficients Matrix:
-		print t_initial, '      ' , t_final
 		
 		Polymatrix =	[[1.0, t_initial,	t_initial*t_initial,	t_initial*t_initial*t_initial	],
 				[0.0, 1.0,		2.0*t_initial,		3.0*t_initial*t_initial		],
@@ -177,16 +176,16 @@ def trajectoryControl(pathx,pathy,kx,ky,V_MAX,Omega_MAX,b):
 def callBack(data):
 	global dt,robotSpeed
 	PathPlanner = rospy.ServiceProxy('makePlane', makeplan)
-	print data.pose
 	try:
 		response = PathPlanner(data.pose)
+		
 	except:
 		return None
-	
-	waypoints=response.pathPoints
 
-	waypoints=waypoints[::-1]
+	waypoints=response.pathPoints
 	print waypoints
+	print '__________'
+	waypoints=waypoints[::-1]
 	#getTrajectory(waypoints,robotSpeed,dt)
 	pathx,pathy,t=getTrajectory(waypoints,robotSpeed,dt)
 	

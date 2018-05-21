@@ -131,7 +131,7 @@ def PathSmoothing(path, maxIter, obstacleList):
 
         # collision check
         if not LineCollisionCheck(first, second, obstacleList):
-            continue
+        	continue
 
         # Create New path
         newPath = []

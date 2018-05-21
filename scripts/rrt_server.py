@@ -148,7 +148,6 @@ class RRT:
 		RRT.child.append(list(x_new))
 		RRT.parent.append(list(x_nearest))
 
-
 		self.temp_point_obj.x=x_nearest[0]
 		self.temp_point_obj.y=x_nearest[1]
 
@@ -219,26 +218,27 @@ class RRT:
 		return out
 
 	def makePlan(self,x):
-		row=RRT.child.index(list(x))
-
+		row=-1
 		temp=Point()
 		temp.x=x[0]
 		temp.y=x[1]
 		path=[copy(temp)]
-		while row>=0:
+		while True:
 			parentx=RRT.parent[row]
 			temp.x=RRT.parent[row][0]
 			temp.y=RRT.parent[row][1]
 			path.append(copy(temp))
-			try:
+
+			if parentx!=list(RRT.V[0]):
 				row=RRT.child.index(parentx)
-			except:
-				row=-1		
+			else:
+				break
+		
+		
 
 		return path
 		
 	def visualize(self,path):
-		print path
 		vis_path=[]
 		for point in path:
 			vis_path.append(point)
@@ -266,7 +266,6 @@ def handler(msg):
 	
 	if gridCheck(mapData,x_goal)==-1:
 		rospy.logerr("Target Goal lies in the unknown space!")
-		print mapData.header.seq
 		return None
 	
 	(trans,rot) = tfLisn.lookupTransform('/map', '/base_link', rospy.Time(0))
@@ -296,12 +295,8 @@ def handler(msg):
 			tree.visualize_tree()
 		
 # finding path
-		if LA.norm(x_new-x_goal)<ETA:
-			try:
-				path=tree.makePlan(x_new)
-			except:
-				rospy.logwarn("failed to get a path")
-				return None
+		if LA.norm(x_new-x_goal)<=(ETA*2):
+			path=tree.makePlan(x_new)
 			path=PathSmoothing(copy(path),100,mapData)
 			tree.visualize(path)
 			break
