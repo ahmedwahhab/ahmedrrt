@@ -12,6 +12,10 @@
   <!-- Run the costmap node -->
   <node name="costmap_node" pkg="costmap_2d" type="costmap_2d_node" >
     <rosparam file="$(find ahmedrrt)/param/cost_params_real.yaml" command="load" ns="costmap" />
+    <param name="costmap/static_layer/track_unknown_space" value="true"/>
+    <param name="costmap/obstacle_layer/track_unknown_space" value="true"/> 
+    <param name="costmap/publish_frequency" value="2.0"/> 
+    <param name="costmap/always_send_full_costmap" value="true"/> 
   </node>
 
 <node pkg="ahmedrrt" type="rrt_server.py" name="rrt_server">

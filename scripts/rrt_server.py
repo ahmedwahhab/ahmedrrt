@@ -266,6 +266,7 @@ def handler(msg):
 	
 	if gridCheck(mapData,x_goal)==-1:
 		rospy.logerr("Target Goal lies in the unknown space!")
+		print mapData.header.seq
 		return None
 	
 	(trans,rot) = tfLisn.lookupTransform('/map', '/base_link', rospy.Time(0))

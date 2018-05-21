@@ -15,6 +15,8 @@
     <rosparam file="$(find ahmedrrt)/param/cost_params.yaml" command="load" ns="costmap" />
     <param name="costmap/static_layer/track_unknown_space" value="true"/>
     <param name="costmap/obstacle_layer/track_unknown_space" value="true"/> 
+    <param name="costmap/publish_frequency" value="2.0"/> 
+    <param name="costmap/always_send_full_costmap" value="true"/> 
   </node>
 
 </launch>
